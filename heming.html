@@ -1,0 +1,116 @@
+ <html>
+<head>
+	<title>Myhemming</title>
+	</head>
+	<script>
+	
+	let contrlBit1 = 0;
+	let contrlBit2 = 0;
+	let contrlBit3 = 0;
+	let hammingCode;
+	let hammingArr;
+	let firstGroup = [0, 2, 3, 4];
+	let secondGroup = [0, 1, 3, 5];
+	let thirdGroup = [1, 2, 3, 6];
+	
+	function groupCheck(hemArr, group){
+		return (hemArr[group[0]] +  hemArr[group[1]] +  hemArr[group[2]] + hemArr[group[3]]) % 2 == 0;
+	}
+
+	function code(){
+		let inpText = document.getElementById('inpMessage').value;
+		//ToDo Hemming code
+		inpText = inpText.split('');
+		
+		for(let i = 0; i<inpText.length; i++){
+			inpText[i] = parseInt(inpText[i]);  
+		}
+		
+		contrlBit1 = (inpText[0] + inpText[2] + inpText[3]) % 2;
+		contrlBit2 = (inpText[0] + inpText[1] + inpText[3]) % 2;
+		contrlBit3 = (inpText[3] + inpText[1] + inpText[2]) % 2;
+		
+		hammingCode = inpText.join('') + contrlBit1.toString() + contrlBit2.toString() + contrlBit3.toString();
+		
+		document.getElementById('outputMessage').value = hammingCode;
+		
+	}
+	
+	function decode(){
+		let errorBit = 0;
+		hammingArr = document.getElementById('outputMessage').value;
+		console.log(document.getElementById('outputMessage').value);
+		hammingArr = hammingArr.split('');
+
+		for(let i = 0; i < hammingArr.length; i++) {
+			hammingArr[i] = parseInt(hammingArr[i]);
+		}
+		//console.log(hammingArr);
+		console.log(groupCheck(hammingArr, firstGroup) + " firsgroup");
+		console.log(groupCheck(hammingArr, secondGroup) + " secondGroup");
+		console.log(groupCheck(hammingArr, thirdGroup) + " thirdgroup");
+
+
+		if (groupCheck(hammingArr, firstGroup) == false && groupCheck(hammingArr, secondGroup) == false && groupCheck(hammingArr, thirdGroup) == false) {
+			errorBit = 4;
+			return errorBit;
+		}
+		if (groupCheck(hammingArr, firstGroup) == false && groupCheck(hammingArr, secondGroup) == false) {
+			errorBit = 1;
+			return errorBit;
+		}
+		if (groupCheck(hammingArr, secondGroup) == false && groupCheck(hammingArr, thirdGroup) == false) {
+			errorBit = 2;
+			return errorBit;
+		}
+		if (groupCheck(hammingArr, firstGroup) == false && groupCheck(hammingArr, thirdGroup) == false) {
+			errorBit = 3;
+			return errorBit;
+		}
+		if (groupCheck(hammingArr, firstGroup) == false) {
+			errorBit = 5;
+			return errorBit;
+		}
+		if (groupCheck(hammingArr, secondGroup) == false) {
+			errorBit = 6;
+			return errorBit;
+		}
+		if (groupCheck(hammingArr, thirdGroup) == false) {
+			errorBit = 7;
+			return errorBit;
+		}
+		return errorBit;
+
+		console.log("error Bit");
+		console.log(errorBit);
+	}
+
+	function output(){
+		errorBit = decode();
+		if (errorBit != 0) {
+			hammingArr[errorBit-1] = hammingArr[errorBit-1] === 0 ? 1 : 0;
+		}
+		document.getElementById('ifError').value = errorBit;
+		document.getElementById('originalMessage').value = hammingArr.join('');
+	}
+	</script>
+</head>
+<body>
+	<h1 style="color: white;" >Shevnin</h1>
+	<p style="color: white;" ><input type='text' id='inpMessage'/> input message, 4 bits</p>
+	<p><input type='button' value='Code' onclick='code()'/></p>
+	<p style="color: white;"><input type='text' id='outputMessage'/> coded message </p>
+	<p><input type='button' value='Check' onclick='output()'/></p>
+	<p style="color: white;"><input type='text' id='originalMessage'/> original message </p>
+	<p style="color: white;"><input type='text' id='ifError'/></p>
+	<p></p>
+ 
+</body>
+</html>
+
+<style>
+  body {
+    
+	background-color: rgb(50, 50, 51);
+  }
+</style>
